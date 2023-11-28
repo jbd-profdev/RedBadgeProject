@@ -1,0 +1,49 @@
+@page "/vehicle"
+@using RedBadgeProject.Shared.Models.Vehicle
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Add a new Vehicle</h3>
+
+<a href="/vehicle/create">Create a vehicle</a>
+
+@if (_vehicles == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>CompanyId</th>
+                <th>Capacity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in _vehicles)
+            {
+                <tr>
+                    <td><strong>@vehicle.Name</strong></td>
+                    <td><strong>@vehicle.CompanyId</strong></td>
+                    <td><strong>@vehicle.Capacity</strong></td>
+                    <td>
+                        <a href="@($"vehicle/{vehicle.Id}")">Details</a>
+                        <a href="@($"vehicle/edit/{vehicle.Id}")">Edit</a>
+                        <a href="@($"vehicle/delete/{vehicle.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<VehicleDetail> _vehicles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _vehicles = await Http.GetFromJsonAsync<List<VehicleDetail>>("/api/vehicle");
+    }
+}
