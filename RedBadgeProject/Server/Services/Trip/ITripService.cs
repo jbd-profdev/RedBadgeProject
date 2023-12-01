@@ -9,6 +9,6 @@ namespace RedBadgeProject.Services.Trip
         Task<List<TripDetail>> GetAllTripsAsync();
         Task<TripDetail?> GetTripByIdAsync(int tripId);
         Task<bool> UpdateTripAsync(TripEdit request);
-        Task<bool> DeleteTripAsync(TripDelete tripId);
+        Task<bool> DeleteTripAsync(int tripId);
     }
 }

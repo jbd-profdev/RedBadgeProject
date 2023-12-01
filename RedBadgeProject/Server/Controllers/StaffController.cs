@@ -83,7 +83,7 @@ namespace RedBadgeProject.Shared.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, StaffDelete staffId)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!SetUserIdInService()) return Unauthorized();
 
@@ -91,7 +91,7 @@ namespace RedBadgeProject.Shared.Controllers
 
             if (staff == null) return NotFound();
 
-            bool wasSuccessful = await _staffService.DeleteStaffAsync(staffId);
+            bool wasSuccessful = await _staffService.DeleteStaffAsync(id);
 
             if (!wasSuccessful) return BadRequest();
             return Ok();

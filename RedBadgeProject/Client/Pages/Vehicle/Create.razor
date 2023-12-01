@@ -1,0 +1,71 @@
+@page "/vehicle/create"
+@using RedBadgeProject.Shared.Models.Vehicle
+@attribute [Authorize]
+@inject HttpClient Http
+@using RedBadgeProject.Shared.Models.Company
+@inject NavigationManager navigation
+
+<h3>Create</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+
+@if (companies == null)
+{
+    <p><em>Loading ...</em></p>
+} else {
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name"/>
+            </div>
+
+            <label>Company</label>
+            <InputSelect class="form-control" @bind-Value="model.CompanyId">
+                @foreach (var company in companies)
+                {
+                    <option value="@company.Id">@company.Name</option>
+                }
+            </InputSelect>
+
+            <div class="form-group">
+                <label>Capacity</label>
+                <InputNumber class="form-control" @bind-Value="model.Capacity"/>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary btn-block mt-5">submit</button>
+            </div>
+            <a href="@($"/vehicle")">Back to Index</a>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private VehicleCreate model = new();
+    private IEnumerable<CompanyDetail> companies;
+    private string? errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        companies = await Http.GetFromJsonAsync<IEnumerable<CompanyDetail>>("/api/company");
+    }
+
+    private async void HandleSubmit()
+    {
+        var createRes = await Http.PostAsJsonAsync<VehicleCreate>("/api/vehicle", model);
+        if (createRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/vehicle");
+        }
+        else
+        {
+            errorMessage = "Could not create vehicle.";
+        }
+    }
+}

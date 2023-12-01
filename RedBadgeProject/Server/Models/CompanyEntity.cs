@@ -13,6 +13,6 @@ namespace RedBadgeProject.Server.Models
 
         [ForeignKey(nameof(Location))]
         public int LocationId { get; set; }
-        public virtual LocationEntity? Location { get; set; }
+        public virtual LocationEntity Location { get; set; }
     }
 }

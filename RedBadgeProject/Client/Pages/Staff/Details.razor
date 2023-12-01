@@ -1,0 +1,47 @@
+@page "/staff/{StaffId:int}"
+@using RedBadgeProject.Shared.Models.Staff
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Staff #@StaffId</h3>
+
+@if (Staff != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>@Staff.Name</strong></h4></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">CompanyId: @Staff.CompanyId</p>
+                <p class="card-text">Company name: @Staff.Company</p>
+                <p class="card-text">CurrentLocationId: @Staff.CurrentLocationId</p>
+                <p class="card-text">Location name: @Staff.Location</p>
+                <p class="card-text">RoleId: @Staff.RoleId</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href="@($"/Staff/edit/{StaffId}")" class="btn btn-outline-primary">Edit</a>
+                <a href="@($"/Staff/delete/{StaffId}")" class="btn btn-outline-danger">Delete</a>
+                <hr>
+                <a href="/Staff">Back to Staff Index</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int StaffId {get; set;}
+    public StaffDetail? Staff {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        Staff = await Http.GetFromJsonAsync<StaffDetail>($"/api/staff/{StaffId}");
+    }
+}

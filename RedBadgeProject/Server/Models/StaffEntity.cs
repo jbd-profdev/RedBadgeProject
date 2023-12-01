@@ -18,11 +18,11 @@ namespace RedBadgeProject.Server.Models
 
         [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
-        public virtual CompanyEntity? Company { get; set; }
+        public virtual CompanyEntity Company { get; set; }
 
         [ForeignKey(nameof(Location))]
         public int CurrentLocationId { get; set; }
-        public virtual LocationEntity? Location { get; set; }
+        public virtual LocationEntity Location { get; set; }
 
         public int RoleId { get; set; }
 

@@ -36,9 +36,9 @@ namespace RedBadgeProject.Services.Staff
             return false;
         }
 
-        public async Task<bool> DeleteStaffAsync(StaffDelete staffId)
+        public async Task<bool> DeleteStaffAsync(int staffId)
         {
-            var staffEntity = await _dbcontext.Staff.FindAsync(staffId.Id);
+            var staffEntity = await _dbcontext.Staff.FindAsync(staffId);
 
             if (staffEntity is null)
                 return false;
@@ -55,7 +55,9 @@ namespace RedBadgeProject.Services.Staff
                 Id = entity.Id,
                 Name = entity.Name,
                 CompanyId = entity.CompanyId,
+                Company = entity.Company.Name,
                 CurrentLocationId = entity.CurrentLocationId,
+                Location = entity.Location.Name,
                 RoleId = entity.RoleId
             }).ToListAsync();
 
@@ -64,13 +66,15 @@ namespace RedBadgeProject.Services.Staff
 
         public async Task<StaffDetail?> GetStaffByIdAsync(int staffId)
         {
-            StaffEntity? entity = await _dbcontext.Staff.FindAsync(staffId);
+            StaffEntity? entity = await _dbcontext.Staff.Include(i => i.Company).Include(i => i.Location).FirstOrDefaultAsync(i => i.Id == staffId);
             return entity is null ? null : new StaffDetail
             {
                 Id = entity.Id,
                 Name = entity.Name,
                 CompanyId =entity.CompanyId,
+                Company = entity.Company.Name,
                 CurrentLocationId = entity.CurrentLocationId,
+                Location = entity.Location.Name,
                 RoleId = entity.RoleId
             };
         }

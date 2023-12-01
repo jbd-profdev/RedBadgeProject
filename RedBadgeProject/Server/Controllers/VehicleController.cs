@@ -83,7 +83,7 @@ namespace RedBadgeProject.Server.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id, VehicleDelete vehicleId)
+        public async Task<IActionResult> Delete(int id)
         {
             if (!SetUserIdInService()) return Unauthorized();
 
@@ -91,7 +91,7 @@ namespace RedBadgeProject.Server.Controllers
 
             if (vehicle == null) return NotFound();
 
-            bool wasSuccessful = await _vehicleService.DeleteVehicleAsync(vehicleId);
+            bool wasSuccessful = await _vehicleService.DeleteVehicleAsync(id);
 
             if (!wasSuccessful) return BadRequest();
             return Ok();

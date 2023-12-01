@@ -13,7 +13,7 @@ namespace RedBadgeProject.Server.Models
 
         [ForeignKey(nameof(Company))]
         public int CompanyId { get; set; }
-        public virtual CompanyEntity? Company { get; set; }
+        public virtual CompanyEntity Company { get; set; }
 
         public int Capacity { get; set; }
 

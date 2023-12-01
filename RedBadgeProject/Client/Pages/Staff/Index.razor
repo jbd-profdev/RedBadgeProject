@@ -1,0 +1,55 @@
+@page "/staff"
+@using RedBadgeProject.Shared.Models.Staff
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Add new Staff</h3>
+
+<a href="/staff/create">Create Staff</a>
+
+@if (_staff == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>CompanyId</th>
+                <th>Company Name</th>
+                <th>CurrentLocationId</th>
+                <th>Location Name</th>
+                <th>RoleId</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var staff in _staff)
+            {
+                <tr>
+                    <td><strong>@staff.Name</strong></td>
+                    <td><strong>@staff.CompanyId</strong></td>
+                    <td><strong>@staff.Company</strong></td>
+                    <td><strong>@staff.CurrentLocationId</strong></td>
+                    <td><strong>@staff.Location</strong></td>
+                    <td><strong>@staff.RoleId</strong></td>
+                    <td>
+                        <a href="@($"staff/{staff.Id}")">Details</a>
+                        <a href="@($"staff/edit/{staff.Id}")">Edit</a>
+                        <a href="@($"staff/delete/{staff.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<StaffDetail> _staff;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _staff = await Http.GetFromJsonAsync<List<StaffDetail>>("/api/staff");
+    }
+}

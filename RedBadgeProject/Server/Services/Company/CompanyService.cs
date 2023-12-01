@@ -34,9 +34,9 @@ namespace RedBadgeProject.Services.Company
             return false;
         }
 
-        public async Task<bool> DeleteCompanyAsync(CompanyDelete companyId)
+        public async Task<bool> DeleteCompanyAsync(int companyId)
         {
-            var companyEntity = await _dbcontext.Companies.FindAsync(companyId.Id);
+            var companyEntity = await _dbcontext.Companies.FindAsync(companyId);
 
             if (companyEntity is null)
                 return false;
@@ -52,7 +52,8 @@ namespace RedBadgeProject.Services.Company
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                LocationId = entity.LocationId
+                LocationId = entity.LocationId,
+                Location = entity.Location.Name
             }).ToListAsync();
 
             return companies;
@@ -60,12 +61,13 @@ namespace RedBadgeProject.Services.Company
 
         public async Task<CompanyDetail?> GetCompanyByIdAsync(int companyId)
         {
-            CompanyEntity? entity = await _dbcontext.Companies.FindAsync(companyId);
+            CompanyEntity? entity = await _dbcontext.Companies.Include(i => i.Location).FirstOrDefaultAsync(i => i.Id == companyId);
             return entity is null ? null : new CompanyDetail
             {
                 Id = entity.Id,
                 Name = entity.Name,
-                LocationId = entity.LocationId
+                LocationId = entity.LocationId,
+                Location = entity.Location.Name
             };
         }
 

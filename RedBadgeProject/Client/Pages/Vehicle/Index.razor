@@ -18,6 +18,7 @@ else
             <tr>
                 <th>Name</th>
                 <th>CompanyId</th>
+                <th>Company Name</th>
                 <th>Capacity</th>
             </tr>
         </thead>
@@ -27,6 +28,7 @@ else
                 <tr>
                     <td><strong>@vehicle.Name</strong></td>
                     <td><strong>@vehicle.CompanyId</strong></td>
+                    <td><strong>@vehicle.Company</strong></td>
                     <td><strong>@vehicle.Capacity</strong></td>
                     <td>
                         <a href="@($"vehicle/{vehicle.Id}")">Details</a>

@@ -33,9 +33,9 @@ namespace RedBadgeProject.Services.Location
             return false;
         }
 
-        public async Task<bool> DeleteLocationAsync(LocationDelete locationId)
+        public async Task<bool> DeleteLocationAsync(int locationId)
         {
-            var locationEntity = await _dbcontext.Locations.FindAsync(locationId.Id);
+            var locationEntity = await _dbcontext.Locations.FindAsync(locationId);
 
             if (locationEntity is null)
                 return false;

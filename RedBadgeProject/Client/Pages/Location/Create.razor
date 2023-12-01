@@ -1,0 +1,47 @@
+@page "/location/create"
+@using RedBadgeProject.Shared.Models.Location
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager navigation
+
+<h3>Create</h3>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+
+<div class="container">
+    <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group">
+            <label>Name</label>
+            <InputText class="form-control" @bind-Value="model.Name" />
+        </div>
+
+        <div class="d-flex justify-content-center mt-3">
+            <button type="submit" class="btn btn-primary btn-block mt-5">submit</button>
+        </div>
+        <a href="@($"/location")">Back to Index</a>
+    </EditForm>
+</div>
+
+
+@code {
+    private LocationCreate model = new();
+    private string? errorMessage;
+
+    private async void HandleSubmit()
+    {
+        var createRes = await Http.PostAsJsonAsync<LocationCreate>("/api/location", model);
+        if (createRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/location");
+        }
+        else
+        {
+            errorMessage = "Could not create location.";
+        }
+    }
+}

@@ -1,0 +1,51 @@
+@page "/trip/{TripId:int}"
+@using RedBadgeProject.Shared.Models.Trip
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Trip #@TripId</h3>
+
+@if (Trip != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>@Trip.Name</strong></h4></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">LocationFromId: @Trip.LocationFromId</p>
+                <p class="card-text">LocationFrom name: @Trip.LocationFrom</p>
+                <p class="card-text">LocationToId: @Trip.LocationToId</p>
+                <p class="card-text">LocationTo name: @Trip.LocationTo</p>
+                <p class="card-text">VehicleId: @Trip.VehicleId</p>
+                <p class="card-text">Vehicle: @Trip.Vehicle</p>
+                <p class="card-text">StartDate: @Trip.StartDate</p>
+                <p class="card-text">EndDate: @Trip.EndDate</p>
+                <p class="card-text">Capactiy: @Trip.Capacity</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href="@($"/Trip/edit/{TripId}")" class="btn btn-outline-primary">Edit</a>
+                <a href="@($"/Trip/delete/{TripId}")" class="btn btn-outline-danger">Delete</a>
+                <hr>
+                <a href="/Trip">Back to Trip Index</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int TripId {get; set;}
+    public TripDetail? Trip {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        Trip = await Http.GetFromJsonAsync<TripDetail>($"/api/trip/{TripId}");
+    }
+}

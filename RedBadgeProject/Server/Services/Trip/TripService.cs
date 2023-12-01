@@ -25,7 +25,8 @@ namespace RedBadgeProject.Services.Trip
                 LocationToId = request.LocationToId,
                 VehicleId = request.VehicleId,
                 StartDate = request.StartDate,
-                EndDate = request.EndDate
+                EndDate = request.EndDate,
+                Capacity = request.Capacity
             };
 
             _dbcontext.Trips.Add(entity);
@@ -38,9 +39,9 @@ namespace RedBadgeProject.Services.Trip
             return false;
         }
 
-        public async Task<bool> DeleteTripAsync(TripDelete tripId)
+        public async Task<bool> DeleteTripAsync(int tripId)
         {
-            var tripEntity = await _dbcontext.Trips.FindAsync(tripId.Id);
+            var tripEntity = await _dbcontext.Trips.FindAsync(tripId);
 
             if (tripEntity is null)
                 return false;
@@ -57,8 +58,11 @@ namespace RedBadgeProject.Services.Trip
                 Id = entity.Id,
                 Name = entity.Name,
                 LocationFromId = entity.LocationFromId,
+                LocationFrom = entity.LocationFrom.Name,
                 LocationToId = entity.LocationToId,
+                LocationTo = entity.LocationTo.Name,
                 VehicleId = entity.VehicleId,
+                Vehicle = entity.Vehicle.Name,
                 StartDate = entity.StartDate,
                 EndDate = entity.EndDate,
                 Capacity = entity.Capacity
@@ -67,9 +71,27 @@ namespace RedBadgeProject.Services.Trip
             return trips;
         }
 
-        public Task<TripDetail?> GetTripByIdAsync(int tripId)
+        public async Task<TripDetail?> GetTripByIdAsync(int tripId)
         {
-            throw new NotImplementedException();
+            TripEntity? entity = await _dbcontext.Trips
+            .Include(i => i.LocationFrom)
+            .Include(i => i.LocationTo)
+            .Include(i => i.Vehicle)
+            .FirstOrDefaultAsync(i => i.Id == tripId);
+            return entity is null ? null : new TripDetail
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                LocationFromId = entity.LocationFromId,
+                LocationFrom = entity.LocationFrom.Name,
+                LocationToId = entity.LocationToId,
+                LocationTo = entity.LocationTo.Name,
+                VehicleId = entity.VehicleId,
+                Vehicle = entity.Vehicle.Name,
+                StartDate = entity.StartDate,
+                EndDate = entity.EndDate,
+                Capacity = entity.Capacity
+            };
         }
 
         public async Task<bool> UpdateTripAsync(TripEdit request)

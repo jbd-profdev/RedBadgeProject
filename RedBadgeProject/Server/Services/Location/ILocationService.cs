@@ -9,6 +9,6 @@ namespace RedBadgeProject.Services.Location
         Task<List<LocationDetail>> GetAllLocationsAsync();
         Task<LocationDetail?> GetLocationByIdAsync(int locationId);
         Task<bool> UpdateLocationAsync(LocationEdit request);
-        Task<bool> DeleteLocationAsync(LocationDelete locationId);
+        Task<bool> DeleteLocationAsync(int locationId);
     }
 }

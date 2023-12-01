@@ -9,6 +9,6 @@ namespace RedBadgeProject.Services.Staff
         Task<List<StaffDetail>> GetAllStaffAsync();
         Task<StaffDetail?> GetStaffByIdAsync(int staffId);
         Task<bool> UpdateStaffAsync(StaffEdit request);
-        Task<bool> DeleteStaffAsync(StaffDelete staffId);
+        Task<bool> DeleteStaffAsync(int staffId);
     }
 }

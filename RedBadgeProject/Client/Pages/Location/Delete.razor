@@ -1,0 +1,59 @@
+@page "/location/delete/{LocationId:int}"
+@using RedBadgeProject.Shared.Models.Location
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager navigation
+
+<h3>Delete location #@LocationId?</h3>
+
+@if (Message != null)
+{
+    <h2 class="text-danger">@Message</h2>
+}
+
+@if (Location != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>@Location.Name</strong></h4></span>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-50">
+                <a href="@($"/location")" class="btn btn-outline-primary">Back to Index</a>
+                <a href="#" @onclick="HandleClick" class="btn btn-danger text-white">Delete location</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int LocationId {get; set;}
+    public LocationDetail? Location {get; set;}
+    public string? Message {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        Location = await Http.GetFromJsonAsync<LocationDetail>($"/api/location/{LocationId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteRes = await Http.DeleteAsync($"/api/location/{LocationId}");
+
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/location");
+        }
+        else
+        {
+            Message = "Failed to delete location.";
+        }
+    }
+}

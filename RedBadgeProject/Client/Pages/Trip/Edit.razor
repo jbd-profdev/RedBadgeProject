@@ -1,0 +1,106 @@
+@page "/trip/edit/{TripId:int}"
+@using RedBadgeProject.Shared.Models.Trip
+@attribute [Authorize]
+@inject HttpClient Http
+@using RedBadgeProject.Shared.Models.Vehicle
+@using RedBadgeProject.Shared.Models.Location
+@inject NavigationManager navigation
+
+<h3>Edit trip: @model.Name</h3>
+
+@if (errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+
+@if (vehicles == null || locations == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="form-group">
+                <label>Name</label>
+                <InputText class="form-control" @bind-Value="model.Name"/>
+            </div>
+
+            <label>Departure Location</label>
+            <InputSelect class="form-control" @bind-Value="model.LocationFromId">
+                @foreach (var location in locations)
+                {
+                    <option value="@location.Id">@location.Name</option>
+                }
+            </InputSelect>
+
+            <label>Destination Location</label>
+            <InputSelect class="form-control" @bind-Value="model.LocationToId">
+                @foreach (var location in locations)
+                {
+                    <option value="@location.Id">@location.Name</option>
+                }
+            </InputSelect>
+
+            <label>Vehicle</label>
+            <InputSelect class="form-control" @bind-Value="model.VehicleId">
+                @foreach (var vehicle in vehicles)
+                {
+                    <option value="@vehicle.Id">@vehicle.Name</option>
+                }
+            </InputSelect>
+
+            <div class="form-group">
+                <label>StartDate</label>
+                <InputDate class="form-control" @bind-Value="model.StartDate"/>
+            </div>
+
+            <div class="form-group">
+                <label>EndDate</label>
+                <InputDate class="form-control" @bind-Value="model.EndDate"/>
+            </div>
+
+            <div class="form-group">
+                <label>Capacity</label>
+                <InputNumber class="form-control" @bind-Value="model.Capacity"/>
+            </div>
+
+            <div class="d-flex justify-content-center mt-3">
+                <button type="submit" class="btn btn-primary btn-block mt-5">submit</button>
+            </div>
+            <a href="@($"/trip")">Back to Index</a>
+        </EditForm>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int TripId {get; set;}
+
+    private TripEdit model = new();
+    private IEnumerable<VehicleDetail> vehicles {get; set;}
+    private IEnumerable<LocationDetail> locations {get; set;}
+    private string? errorMessage {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        model = await Http.GetFromJsonAsync<TripEdit>($"/api/trip/{TripId}");
+        vehicles = await Http.GetFromJsonAsync<IEnumerable<VehicleDetail>>("/api/vehicle");
+        locations = await Http.GetFromJsonAsync<IEnumerable<LocationDetail>>("/api/location");
+    }
+
+    private async void HandleSubmit()
+    {
+        var editRes = await Http.PutAsJsonAsync<TripEdit>($"/api/trip/edit/{TripId}", model);
+        if (editRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo($"/trip/{TripId}");
+        }
+        else
+        {
+            errorMessage = "Could not edit trip right now.";
+        }
+    }
+}

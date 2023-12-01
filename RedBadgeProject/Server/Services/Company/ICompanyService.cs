@@ -9,6 +9,6 @@ namespace RedBadgeProject.Services.Company
         Task<List<CompanyDetail>> GetAllCompaniesAsync();
         Task<CompanyDetail?> GetCompanyByIdAsync(int companyId);
         Task<bool> UpdateCompanyAsync(CompanyEdit request);
-        Task<bool> DeleteCompanyAsync(CompanyDelete companyId);
+        Task<bool> DeleteCompanyAsync(int companyId);
     }
 }

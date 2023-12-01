@@ -35,9 +35,9 @@ namespace RedBadgeProject.Services.Vehicle
             return false;
         }
 
-        public async Task<bool> DeleteVehicleAsync(VehicleDelete vehicleId)
+        public async Task<bool> DeleteVehicleAsync(int vehicleId)
         {
-            var vehicleEntity = await _dbcontext.Vehicles.FindAsync(vehicleId.Id);
+            var vehicleEntity = await _dbcontext.Vehicles.FindAsync(vehicleId);
 
             if (vehicleEntity is null)
                 return false;
@@ -54,6 +54,7 @@ namespace RedBadgeProject.Services.Vehicle
                 Id = entity.Id,
                 Name = entity.Name,
                 CompanyId = entity.CompanyId,
+                Company = entity.Company.Name,
                 Capacity = entity.Capacity
             }).ToListAsync();
 
@@ -62,12 +63,13 @@ namespace RedBadgeProject.Services.Vehicle
 
         public async Task<VehicleDetail?> GetVehicleByIdAsync(int vehicleId)
         {
-            VehicleEntity? entity = await _dbcontext.Vehicles.FindAsync(vehicleId);
+            VehicleEntity? entity = await _dbcontext.Vehicles.Include(i => i.Company).FirstOrDefaultAsync(i => i.Id == vehicleId);
             return entity is null ? null : new VehicleDetail
             {
                 Id = entity.Id,
                 Name = entity.Name,
                 CompanyId = entity.CompanyId,
+                Company = entity.Company.Name,
                 Capacity = entity.Capacity
             };
         }

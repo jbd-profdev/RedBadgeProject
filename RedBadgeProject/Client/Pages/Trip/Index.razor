@@ -1,0 +1,63 @@
+@page "/trip"
+@using RedBadgeProject.Shared.Models.Trip
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Add new Trip</h3>
+
+<a href="/trip/create">Create Trip</a>
+
+@if (trips == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>LocationFromId</th>
+                <th>LocationFrom Name</th>
+                <th>LocationToId</th>
+                <th>LocationTo Name</th>
+                <th>VehicleId</th>
+                <th>Vehicle Name</th>
+                <th>StartDate</th>
+                <th>EndDate</th>
+                <th>Capacity</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var trip in trips)
+            {
+                <tr>
+                    <td><strong>@trip.Name</strong></td>
+                    <td><strong>@trip.LocationFromId</strong></td>
+                    <td><strong>@trip.LocationFrom</strong></td>
+                    <td><strong>@trip.LocationToId</strong></td>
+                    <td><strong>@trip.LocationTo</strong></td>
+                    <td><strong>@trip.VehicleId</strong></td>
+                    <td><strong>@trip.Vehicle</strong></td>
+                    <td><strong>@trip.StartDate</strong></td>
+                    <td><strong>@trip.EndDate</strong></td>
+                    <td><strong>@trip.Capacity</strong></td>
+                    <td>
+                        <a href="@($"trip/{trip.Id}")">Details</a>
+                        <a href="@($"trip/edit/{trip.Id}")">Edit</a>
+                        <a href="@($"trip/delete/{trip.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<TripDetail> trips;
+
+    protected override async Task OnInitializedAsync()
+    {
+        trips = await Http.GetFromJsonAsync<List<TripDetail>>("/api/trip");
+    }
+}

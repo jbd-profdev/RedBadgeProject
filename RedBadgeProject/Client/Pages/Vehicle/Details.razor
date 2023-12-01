@@ -1,0 +1,45 @@
+@page "/vehicle/{VehicleId:int}"
+@using RedBadgeProject.Shared.Models.Vehicle
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Vehicle #@VehicleId</h3>
+
+@if (Vehicle != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>@Vehicle.Name</strong></h4></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">CompanyId: @Vehicle.CompanyId</p>
+                <p class="card-text">Company name: @Vehicle.Company</p>
+                <p class="card-text">Capacity: @Vehicle.Capacity</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-25">
+                <a href="@($"/vehicle/edit/{VehicleId}")" class="btn btn-outline-primary">Edit</a>
+                <a href="@($"/vehicle/delete/{VehicleId}")" class="btn btn-outline-danger">Delete</a>
+                <hr>
+                <a href="/vehicle">Back to Vehicles Index</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int VehicleId {get; set;}
+    public VehicleDetail? Vehicle {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        Vehicle = await Http.GetFromJsonAsync<VehicleDetail>($"/api/vehicle/{VehicleId}");
+    }
+}

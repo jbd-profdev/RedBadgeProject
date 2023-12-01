@@ -1,0 +1,70 @@
+@page "/trip/delete/{TripId:int}"
+@using RedBadgeProject.Shared.Models.Trip
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager navigation
+
+<h3>Delete trip #@TripId?</h3>
+
+@if (Message != null)
+{
+    <h2 class="text-danger">@Message</h2>
+}
+
+@if (Trip != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>@Trip.Name</strong></h4></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">LocationFromId: @Trip.LocationFromId</p>
+                <p class="card-text">Departure Name: @Trip.LocationFrom</p>
+                <p class="card-text">LocationTo: @Trip.LocationToId</p>
+                <p class="card-text">Destination Name: @Trip.LocationTo</p>
+                <p class="card-text">VehicleId: @Trip.VehicleId</p>
+                <p class="card-text">Vehicle name: @Trip.Vehicle</p>
+                <p class="card-text">StartDate: @Trip.StartDate</p>
+                <p class="card-text">EndDate: @Trip.EndDate</p>
+                <p class="card-text">Capacity: @Trip.Capacity</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-50">
+                <a href="@($"/trip")" class="btn btn-outline-primary">Back to Index</a>
+                <a href="#" @onclick="HandleClick" class="btn btn-danger text-white">Delete trip</a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int TripId {get; set;}
+    public TripDetail? Trip {get; set;}
+    public string? Message {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        Trip = await Http.GetFromJsonAsync<TripDetail>($"/api/trip/{TripId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteRes = await Http.DeleteAsync($"/api/trip/{TripId}");
+
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/trip");
+        }
+        else
+        {
+            Message = "Failed to delete trip.";
+        }
+    }
+}

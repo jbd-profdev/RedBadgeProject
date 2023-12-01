@@ -9,6 +9,6 @@ namespace RedBadgeProject.Services.Vehicle
         Task<List<VehicleDetail>> GetAllVehiclesAsync();
         Task<VehicleDetail?> GetVehicleByIdAsync(int vehicleId);
         Task<bool> UpdateVehicleAsync(VehicleEdit request);
-        Task<bool> DeleteVehicleAsync(VehicleDelete vehicleId);
+        Task<bool> DeleteVehicleAsync(int vehicleId);
     }
 }

@@ -1,0 +1,45 @@
+@page "/location"
+@using RedBadgeProject.Shared.Models.Location
+@attribute [Authorize]
+@inject HttpClient Http
+
+<h3>Add a new Location</h3>
+
+<a href="/location/create">Create a location</a>
+
+@if (_locations == null)
+{
+    <p><em>Loading ...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var location in _locations)
+            {
+                <tr>
+                    <td><strong>@location.Name</strong></td>
+                    <td>
+                        <a href="@($"location/{location.Id}")">Details</a>
+                        <a href="@($"location/edit/{location.Id}")">Edit</a>
+                        <a href="@($"location/delete/{location.Id}")">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<LocationDetail> _locations;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _locations = await Http.GetFromJsonAsync<List<LocationDetail>>("/api/location");
+    }
+}
