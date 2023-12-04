@@ -39,8 +39,8 @@ else
                     <td><strong>@trip.LocationTo</strong></td>
                     <td><strong>@trip.VehicleId</strong></td>
                     <td><strong>@trip.Vehicle</strong></td>
-                    <td><strong>@trip.StartDate</strong></td>
-                    <td><strong>@trip.EndDate</strong></td>
+                    <td><strong>@trip.StartDate.Value.ToString("dd-MMM-yyyy")</strong></td>
+                    <td><strong>@trip.EndDate.Value.ToString("dd-MMM-yyyy")</strong></td>
                     <td><strong>@trip.Capacity</strong></td>
                     <td>
                         <a href="@($"trip/{trip.Id}")">Details</a>

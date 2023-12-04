@@ -25,8 +25,8 @@
                 <p class="card-text">Destination Name: @Trip.LocationTo</p>
                 <p class="card-text">VehicleId: @Trip.VehicleId</p>
                 <p class="card-text">Vehicle name: @Trip.Vehicle</p>
-                <p class="card-text">StartDate: @Trip.StartDate</p>
-                <p class="card-text">EndDate: @Trip.EndDate</p>
+                <p class="card-text">StartDate: @Trip.StartDate.Value.ToString("dd-MMM-yyyy")</p>
+                <p class="card-text">EndDate: @Trip.EndDate.Value.ToString("dd-MMM-yyyy")</p>
                 <p class="card-text">Capacity: @Trip.Capacity</p>
             </div>
         </div>
