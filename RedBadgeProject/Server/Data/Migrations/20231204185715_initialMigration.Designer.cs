@@ -12,7 +12,7 @@ using RedBadgeProject.Server.Data;
 namespace RedBadgeProject.Server.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231127205339_initialMigration")]
+    [Migration("20231204185715_initialMigration")]
     partial class initialMigration
     {
         /// <inheritdoc />
@@ -492,7 +492,7 @@ namespace RedBadgeProject.Server.Data.Migrations
                     b.Property<int>("Capacity")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("EndDate")
+                    b.Property<DateTimeOffset?>("EndDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<int>("LocationFromId")
@@ -505,7 +505,7 @@ namespace RedBadgeProject.Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTimeOffset>("StartDate")
+                    b.Property<DateTimeOffset?>("StartDate")
                         .HasColumnType("datetimeoffset");
 
                     b.Property<int>("VehicleId")
@@ -517,6 +517,8 @@ namespace RedBadgeProject.Server.Data.Migrations
 
                     b.HasIndex("LocationToId");
 
+                    b.HasIndex("VehicleId");
+
                     b.ToTable("Trips");
 
                     b.HasData(
@@ -524,23 +526,72 @@ namespace RedBadgeProject.Server.Data.Migrations
                         {
                             Id = 1,
                             Capacity = 26,
-                            EndDate = new DateTimeOffset(new DateTime(2023, 11, 29, 20, 53, 38, 831, DateTimeKind.Unspecified).AddTicks(98), new TimeSpan(0, 0, 0, 0, 0)),
+                            EndDate = new DateTimeOffset(new DateTime(2023, 12, 6, 18, 57, 15, 74, DateTimeKind.Unspecified).AddTicks(2035), new TimeSpan(0, 0, 0, 0, 0)),
                             LocationFromId = 1,
                             LocationToId = 2,
                             Name = "Indy to Phoenix",
-                            StartDate = new DateTimeOffset(new DateTime(2023, 11, 27, 20, 53, 38, 831, DateTimeKind.Unspecified).AddTicks(95), new TimeSpan(0, 0, 0, 0, 0)),
+                            StartDate = new DateTimeOffset(new DateTime(2023, 12, 4, 18, 57, 15, 74, DateTimeKind.Unspecified).AddTicks(2028), new TimeSpan(0, 0, 0, 0, 0)),
                             VehicleId = 1
                         },
                         new
                         {
                             Id = 2,
                             Capacity = 4,
-                            EndDate = new DateTimeOffset(new DateTime(2023, 12, 11, 20, 53, 38, 831, DateTimeKind.Unspecified).AddTicks(116), new TimeSpan(0, 0, 0, 0, 0)),
+                            EndDate = new DateTimeOffset(new DateTime(2023, 12, 18, 18, 57, 15, 74, DateTimeKind.Unspecified).AddTicks(2066), new TimeSpan(0, 0, 0, 0, 0)),
                             LocationFromId = 2,
                             LocationToId = 1,
                             Name = "Phoenix to Indy",
-                            StartDate = new DateTimeOffset(new DateTime(2023, 11, 27, 20, 53, 38, 831, DateTimeKind.Unspecified).AddTicks(115), new TimeSpan(0, 0, 0, 0, 0)),
+                            StartDate = new DateTimeOffset(new DateTime(2023, 12, 4, 18, 57, 15, 74, DateTimeKind.Unspecified).AddTicks(2065), new TimeSpan(0, 0, 0, 0, 0)),
                             VehicleId = 2
+                        });
+                });
+
+            modelBuilder.Entity("RedBadgeProject.Server.Models.TripStaffEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("StaffId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TripId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StaffId");
+
+                    b.HasIndex("TripId");
+
+                    b.ToTable("TripStaff");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            StaffId = 1,
+                            TripId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            StaffId = 2,
+                            TripId = 1
+                        },
+                        new
+                        {
+                            Id = 3,
+                            StaffId = 1,
+                            TripId = 2
+                        },
+                        new
+                        {
+                            Id = 4,
+                            StaffId = 2,
+                            TripId = 2
                         });
                 });
 
@@ -583,21 +634,6 @@ namespace RedBadgeProject.Server.Data.Migrations
                             CompanyId = 1,
                             Name = "International Schooler"
                         });
-                });
-
-            modelBuilder.Entity("StaffEntityTripEntity", b =>
-                {
-                    b.Property<int>("StaffListId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TripListId")
-                        .HasColumnType("int");
-
-                    b.HasKey("StaffListId", "TripListId");
-
-                    b.HasIndex("TripListId");
-
-                    b.ToTable("StaffEntityTripEntity");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -695,9 +731,36 @@ namespace RedBadgeProject.Server.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("RedBadgeProject.Server.Models.VehicleEntity", "Vehicle")
+                        .WithMany()
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.Navigation("LocationFrom");
 
                     b.Navigation("LocationTo");
+
+                    b.Navigation("Vehicle");
+                });
+
+            modelBuilder.Entity("RedBadgeProject.Server.Models.TripStaffEntity", b =>
+                {
+                    b.HasOne("RedBadgeProject.Server.Models.StaffEntity", "Staff")
+                        .WithMany("TripList")
+                        .HasForeignKey("StaffId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("RedBadgeProject.Server.Models.TripEntity", "Trip")
+                        .WithMany("StaffList")
+                        .HasForeignKey("TripId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Staff");
+
+                    b.Navigation("Trip");
                 });
 
             modelBuilder.Entity("RedBadgeProject.Server.Models.VehicleEntity", b =>
@@ -711,19 +774,14 @@ namespace RedBadgeProject.Server.Data.Migrations
                     b.Navigation("Company");
                 });
 
-            modelBuilder.Entity("StaffEntityTripEntity", b =>
+            modelBuilder.Entity("RedBadgeProject.Server.Models.StaffEntity", b =>
                 {
-                    b.HasOne("RedBadgeProject.Server.Models.StaffEntity", null)
-                        .WithMany()
-                        .HasForeignKey("StaffListId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+                    b.Navigation("TripList");
+                });
 
-                    b.HasOne("RedBadgeProject.Server.Models.TripEntity", null)
-                        .WithMany()
-                        .HasForeignKey("TripListId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
+            modelBuilder.Entity("RedBadgeProject.Server.Models.TripEntity", b =>
+                {
+                    b.Navigation("StaffList");
                 });
 #pragma warning restore 612, 618
         }

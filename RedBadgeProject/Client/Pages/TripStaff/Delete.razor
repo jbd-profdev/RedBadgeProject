@@ -1,0 +1,64 @@
+@page "/tripstaff/delete/{TripStaffId:int}"
+@using RedBadgeProject.Shared.Models.TripStaff
+@attribute [Authorize]
+@inject HttpClient Http
+@inject NavigationManager navigation
+
+<h3>Delete TripStaff allocation #@TripStaffId?</h3>
+
+@if (Message != null)
+{
+    <h2 class="text-danger">@Message</h2>
+}
+
+@if (TripStaff != null)
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between">
+                <span><h4><strong>TripStaff Id: @TripStaff.Id</strong></h4></span>
+            </div>
+            <div class="card-body">
+                <p class="card-text">Staff Name: @TripStaff.Staff</p>
+                <p class="card-text">Trip Name: @TripStaff.Trip</p>
+            </div>
+        </div>
+        <div class="d-flex justify-content-center mt-3">
+            <div class="text-center justify-content-between w-50">
+                <a href="@("/staff")" class="btn btn-outline-primary">Back to Staff Index</a>
+                <a href="@("/trip")" class="btn btn-outline-primary">Back to Trip Index</a>
+                <a href="#" @onclick="HandleClick" class="btn btn-danger text-white">Delete</a>
+            </div>
+        </div>
+    </div>
+}
+else 
+{
+    <p>Loading...</p>
+}
+
+@code {
+    [Parameter]
+    public int TripStaffId {get; set;}
+    public TripStaffDetail? TripStaff {get; set;}
+    public string? Message {get; set;}
+
+    protected override async Task OnInitializedAsync()
+    {
+        TripStaff = await Http.GetFromJsonAsync<TripStaffDetail>($"/api/tripstaff/{TripStaffId}");
+    }
+
+    private async void HandleClick()
+    {
+        var deleteRes = await Http.DeleteAsync($"/api/tripstaff/{TripStaffId}");
+
+        if (deleteRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/");
+        }
+        else
+        {
+            Message = "Failed to delete TripStaff allocation.";
+        }
+    }
+}

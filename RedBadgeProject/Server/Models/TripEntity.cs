@@ -7,7 +7,7 @@ namespace RedBadgeProject.Server.Models
     {
         public TripEntity()
         {
-            StaffList = new HashSet<StaffEntity>();
+            StaffList = new HashSet<TripStaffEntity>();
         }
 
         [Key]
@@ -32,6 +32,6 @@ namespace RedBadgeProject.Server.Models
         public DateTimeOffset? EndDate { get; set; }
         public int Capacity { get; set; }
 
-        public virtual ICollection<StaffEntity> StaffList { get; set; } = new List<StaffEntity>();
+        public virtual ICollection<TripStaffEntity> StaffList { get; set; } = new List<TripStaffEntity>();
     }
 }

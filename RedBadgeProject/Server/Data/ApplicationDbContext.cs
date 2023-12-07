@@ -19,6 +19,7 @@ namespace RedBadgeProject.Server.Data
         public DbSet<StaffEntity> Staff { get; set; }
         public DbSet<TripEntity> Trips { get; set; }
         public DbSet<VehicleEntity> Vehicles { get; set; }
+        public DbSet<TripStaffEntity> TripStaff { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -110,6 +111,33 @@ namespace RedBadgeProject.Server.Data
                     StartDate = DateTimeOffset.UtcNow,
                     EndDate = DateTimeOffset.UtcNow.AddDays(14),
                     Capacity = 4
+                }
+            );
+
+            modelBuilder.Entity<TripStaffEntity>().HasData(
+                new TripStaffEntity
+                {
+                    Id = 1,
+                    StaffId = 1,
+                    TripId = 1
+                }
+                , new TripStaffEntity
+                {
+                    Id = 2,
+                    StaffId = 2,
+                    TripId = 1
+                }
+                , new TripStaffEntity
+                {
+                    Id = 3,
+                    StaffId = 1,
+                    TripId = 2
+                }
+                , new TripStaffEntity
+                {
+                    Id = 4,
+                    StaffId = 2,
+                    TripId = 2
                 }
             );
 

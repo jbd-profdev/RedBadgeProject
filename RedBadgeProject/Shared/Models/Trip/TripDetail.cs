@@ -1,5 +1,3 @@
-// using RedBadgeProject.Server.Models;
-
 namespace RedBadgeProject.Shared.Models.Trip
 {
     public class TripDetail
@@ -15,6 +13,5 @@ namespace RedBadgeProject.Shared.Models.Trip
         public DateTimeOffset? StartDate { get; set; }
         public DateTimeOffset? EndDate { get; set; }
         public int Capacity { get; set; }
-        // public virtual ICollection<StaffEntity> StaffList { get; set; } = new List<StaffEntity>();
     }
 }

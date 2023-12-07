@@ -1,0 +1,77 @@
+@page "/tripstaff/create"
+@using RedBadgeProject.Shared.Models.TripStaff
+@attribute [Authorize]
+@inject HttpClient Http
+@using RedBadgeProject.Shared.Models.Staff
+@using RedBadgeProject.Shared.Models.Trip
+@inject NavigationManager navigation
+
+<h3>Add Staff to Trips</h3>
+
+@if(errorMessage != null)
+{
+    <h5 class="text-danger">@errorMessage</h5>
+}
+
+@if (_staff == null || _trips == null)
+{
+    <p>Loading...</p>
+}
+else {
+    <div class="container">
+        <EditForm Model="@model" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+                <label>Staff</label>
+                <InputSelect class="form-control" @bind-Value="model.StaffId">
+                    @foreach (var staff in _staff)
+                    {
+                        <option value="@staff.Id">@staff.Name</option>
+                    }
+                </InputSelect>
+
+                <label>Trip</label>
+                <InputSelect class="form-control" @bind-Value="model.TripId">
+                    @foreach (var trip in _trips)
+                    {
+                        <option value="@trip.Id">@trip.Name</option>
+                    }
+                </InputSelect>
+
+                <div class="d-flex justify-content-center mt-3">
+                    <div class="text-center justify-content-between w-25">
+                        <button type="submit" class="btn btn-primary btn-block mt-5">submit</button>
+                        <hr>
+                        <a href="@("/staff")" class="btn btn-outline-primary">Back to Staff Index</a>
+                        <a href="@("/trip")" class="btn btn-outline-primary">Back to Trip Index</a>
+                    </div>
+                </div>
+        </EditForm>
+    </div>
+}
+
+@code {
+    private TripStaffCreate model = new();
+    private IEnumerable<StaffDetail> _staff;
+    private IEnumerable<TripDetail> _trips;
+    private string? errorMessage;
+
+        protected override async Task OnInitializedAsync()
+        {
+            _staff = await Http.GetFromJsonAsync<IEnumerable<StaffDetail>>("/api/staff");
+            _trips = await Http.GetFromJsonAsync<IEnumerable<TripDetail>>("/api/trip");
+        }
+
+        private async void HandleSubmit()
+    {
+        var createRes = await Http.PostAsJsonAsync<TripStaffCreate>("/api/tripstaff", model);
+        if (createRes.IsSuccessStatusCode)
+        {
+            navigation.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = "Could not add Staff to Trip.";
+        }
+    }
+}

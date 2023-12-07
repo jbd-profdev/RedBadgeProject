@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using RedBadgeProject.Server.Data;
 using RedBadgeProject.Server.Models;
+using RedBadgeProject.Server.Services.TripStaff;
 using RedBadgeProject.Services.Company;
 using RedBadgeProject.Services.Location;
 using RedBadgeProject.Services.Staff;
@@ -22,6 +23,7 @@ builder.Services.AddScoped<IStaffService, StaffService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<ILocationService, LocationService>();
+builder.Services.AddScoped<ITripStaffService, TripStaffService>();
 
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();

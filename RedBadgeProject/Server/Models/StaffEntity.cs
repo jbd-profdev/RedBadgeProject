@@ -7,7 +7,7 @@ namespace RedBadgeProject.Server.Models
     {
         public StaffEntity()
         {
-            TripList = new HashSet<TripEntity>();
+            TripList = new HashSet<TripStaffEntity>();
         }
 
         [Required]
@@ -26,6 +26,6 @@ namespace RedBadgeProject.Server.Models
 
         public int RoleId { get; set; }
 
-        public virtual ICollection<TripEntity> TripList { get; set; } = new List<TripEntity>();
+        public virtual ICollection<TripStaffEntity> TripList { get; set; } = new List<TripStaffEntity>();
     }
 }

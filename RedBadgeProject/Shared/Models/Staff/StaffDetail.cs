@@ -1,5 +1,3 @@
-// using RedBadgeProject.Server.Models;
-
 namespace RedBadgeProject.Shared.Models.Staff
 {
     public class StaffDetail
@@ -11,6 +9,5 @@ namespace RedBadgeProject.Shared.Models.Staff
         public int CurrentLocationId { get; set; }
         public string Location { get; set; } = string.Empty;
         public int RoleId { get; set; }
-        // public virtual ICollection<TripEntity> TripList { get; set; } = new List<TripEntity>();
     }
 }
